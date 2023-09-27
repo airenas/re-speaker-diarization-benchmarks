@@ -25,14 +25,14 @@ def main(argv):
     cuda = os.getenv('CUDA') # 'cuda:0'
     if cuda and cuda != "cpu":
         pipeline = pipeline.to(torch.device(cuda))
-    logger.info(f"Starting diarization: file len {f_len_secs}s on '{cuda}'")
+    logger.info(f"Starting diarization: file len {f_len_secs:.2f}s on '{cuda}'")
 
     start_time = time.time()
     diarization = pipeline(args.input)
     end_time = time.time()
     elapsed_time = end_time - start_time
     rt = elapsed_time/f_len_secs
-    logger.info(f"Done diarization in {elapsed_time}s, rt = {rt}")
+    logger.info(f"Done diarization in {elapsed_time:.2f}s, rt = {rt:.2f}")
 
     base, _ = os.path.splitext(os.path.basename(args.input))
     out_file = os.path.join(args.output_dir, base + ".rrtm")

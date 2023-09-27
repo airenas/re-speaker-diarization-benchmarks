@@ -39,6 +39,8 @@ $(work_dir)/pyannote/%.rrtm: | $(work_dir)/pyannote
 
 calc-err/pyannote:
 	cat $(list) | xargs -n1 -I {} sh -c "$(MAKE) $(work_dir)/pyannote/{}.err"
+	cat $(work_dir)/pyannote/*.err
+	cat $(work_dir)/pyannote/*.time
 
 $(work_dir)/pyannote/%.err: $(work_dir)/pyannote/%.rrtm
 	$(python_cmd) sd_benchmark/pyannote/der.py --f1 $(corpus_dir)/audio/$*.rrtm --f2 $^ --output $@
