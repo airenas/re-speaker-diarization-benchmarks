@@ -27,16 +27,16 @@ def main(argv):
     logger.info(f"Out: {out_file}")
 
     try:
-        file_name = os.path.splitext(os.path.basename(file))
+        file_name, _ = os.path.splitext(os.path.basename(file))
         rrtm_lines = []
         grid = textgrids.TextGrid(file)
         for annotation in grid['S']:
-            start_time = annotation.xmin / 1000
-            duration = annotation.xmax / 1000 - start_time
+            start_time = annotation.xmin
+            duration = annotation.xmax - start_time
             label = annotation.text
 
             if label and label != "_S":
-                rrtm_line = f"SPEAKER {file_name} 1 {start_time:.6f} {duration:.3f} <NA> <NA> {label} <NA> <NA>"
+                rrtm_line = f"SPEAKER {file_name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> {label} <NA> <NA>"
                 rrtm_lines.append(rrtm_line)
 
         with open(out_file, "w") as file:

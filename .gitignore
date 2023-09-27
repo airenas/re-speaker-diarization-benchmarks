@@ -1,3 +1,5 @@
 work/**
 data/**
 .idea/
+corpus/**
+Makefile.options
