@@ -16,8 +16,8 @@ The repo tests several speaker diarization tools on our local corpus:
 Tested with Python 3.11
 
 ```bash
-conda create -n spia2023 python=3.11
-conda activate spia2023
+conda create -n spdia2023 python=3.11
+conda activate spdia2023
 pip install -r requirements.txt
 ```
 

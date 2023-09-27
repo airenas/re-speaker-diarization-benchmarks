@@ -16,12 +16,14 @@ $(work_dir)/.done/.grids: $(textgrid_data) | $(work_dir)/.done/ $(work_dir)/grid
 	unzip $^ -d $(work_dir)/grids
 	touch $@
 
-$(work_dir)/.done/.rrtm: $(work_dir)/.done/.grids $(work_dir)/.done/.audio | $(work_dir)/rrtm
-	find $(work_dir)/grids -type f -name "*.TextGrid" -print0 | xargs -0 -I {} sh -c "$(python_cmd) sd_benchmark/tg_to_rrtm.py --input {} --out_dir $(work_dir)/audio --prefix $(work_dir)/grids"
-
-	# touch $@
+$(work_dir)/.done/.rrtm: $(work_dir)/.done/.grids $(work_dir)/.done/.audio
+	find $(work_dir)/grids -type f -name "*.TextGrid" -print0 | xargs -0 -I {} sh -c "$(python_cmd) sd_benchmark/tg_to_rrtm.py --input {} --out_dir $(work_dir)/audio/WAV16 --prefix $(work_dir)/grids/GRID-SPK"
+	touch $@
 
 prepare/data: $(work_dir)/.done/.audio $(work_dir)/.done/.rrtm
+
+prepare/list: $(work_dir)/file.list
+	find $(work_dir)/grids -type f -name "*.wav" -print0 > $@
 
 clean:
 	rm -rf $(work_dir)
