@@ -40,7 +40,7 @@ def main(argv):
         diarization.write_rttm(f)
     out_file = os.path.join(args.output_dir, base + ".time")
     with open(out_file, "w") as f:
-        f.write(f"{base}\t{elapsed_time:.2f}\t{rt:.2f}\t{cuda}\n")
+        f.write(f"{base}\t{f_len_secs:.2f}\t{elapsed_time:.2f}\t{rt:.2f}\t{cuda}\n")
 
 
 def duration(file):
