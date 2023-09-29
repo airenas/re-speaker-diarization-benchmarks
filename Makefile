@@ -9,7 +9,8 @@ work_dir=./work
 audio_data=./data/WAV16.ZIP
 textgrid_data=./data/GRID-SPK.ZIP
 
-$(corpus_dir)/.done/ $(corpus_dir)/audio $(corpus_dir)/grids $(work_dir)/rrtm corpus $(work_dir)/pyannote $(work_dir)/lium:
+$(corpus_dir)/.done/ $(corpus_dir)/audio $(corpus_dir)/grids $(work_dir)/rrtm corpus $(work_dir)/pyannote $(work_dir)/lium \
+	$(work_dir)/.done/:
 	mkdir -p $@
 
 $(corpus_dir)/.done/.audio: $(audio_data) | $(corpus_dir)/.done/ $(corpus_dir)/audio
@@ -37,10 +38,14 @@ diarization/pyannote:
 diarization/lium:
 	cat $(list) | xargs -n1 -I {} sh -c "$(MAKE) $(work_dir)/lium/{}.rrtm $(work_dir)/lium/{}.seg"
 
+$(work_dir)/.done/.lium-docker: | $(work_dir)/.done/
+	cd lium && $(MAKE) dbuild
+	touch $@
+
 $(work_dir)/pyannote/%.rrtm: | $(work_dir)/pyannote
 	$(python_cmd) sd_benchmark/pyannote/diarization.py --input $(corpus_dir)/audio/$*.wav --output_dir $(work_dir)/pyannote
 
-$(work_dir)/lium/%.seg: | $(work_dir)/lium
+$(work_dir)/lium/%.seg: $(work_dir)/.done/.lium-docker | $(work_dir)/lium
 	docker run --rm -v $$(pwd)/$(corpus_dir)/audio:/in -v $$(pwd)/$(work_dir)/lium:/res airenas/lium:0.1.0 ./run.sh /in/$*.wav /res/$*.seg
 
 $(work_dir)/lium/%.rrtm: $(work_dir)/lium/%.seg | $(work_dir)/lium
@@ -51,7 +56,14 @@ calc-err/pyannote:
 	cat $(work_dir)/pyannote/*.err
 	cat $(work_dir)/pyannote/*.time
 
+calc-err/lium:
+	cat $(list) | xargs -n1 -I {} sh -c "$(MAKE) $(work_dir)/lium/{}.err"
+	cat $(work_dir)/lium/*.err
+
 $(work_dir)/pyannote/%.err: $(work_dir)/pyannote/%.rrtm
+	$(python_cmd) sd_benchmark/pyannote/der.py --f1 $(corpus_dir)/audio/$*.rrtm --f2 $^ --output $@
+
+$(work_dir)/lium/%.err: $(work_dir)/lium/%.rrtm
 	$(python_cmd) sd_benchmark/pyannote/der.py --f1 $(corpus_dir)/audio/$*.rrtm --f2 $^ --output $@
 
 clean:
