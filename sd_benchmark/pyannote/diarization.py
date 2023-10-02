@@ -2,12 +2,12 @@ import argparse
 import os
 import sys
 import time
-import wave
 
 import torch
 from pyannote.audio import Pipeline
 
 from sd_benchmark.logger import logger
+from sd_benchmark.utils.duration import duration
 
 
 def main(argv):
@@ -22,7 +22,7 @@ def main(argv):
     logger.info("Init models")
     pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization@2.1",
                                         use_auth_token=os.getenv('HF_API_TOKEN'))
-    cuda = os.getenv('CUDA') # 'cuda:0'
+    cuda = os.getenv('CUDA')  # 'cuda:0'
     if cuda and cuda != "cpu":
         pipeline = pipeline.to(torch.device(cuda))
     logger.info(f"Starting diarization: file len {f_len_secs:.2f}s on '{cuda}'")
@@ -31,7 +31,7 @@ def main(argv):
     diarization = pipeline(args.input)
     end_time = time.time()
     elapsed_time = end_time - start_time
-    rt = elapsed_time/f_len_secs
+    rt = elapsed_time / f_len_secs
     logger.info(f"Done diarization in {elapsed_time:.2f}s, rt = {rt:.2f}")
 
     base, _ = os.path.splitext(os.path.basename(args.input))
@@ -41,13 +41,6 @@ def main(argv):
     out_file = os.path.join(args.output_dir, base + ".time")
     with open(out_file, "w") as f:
         f.write(f"{base}\t{f_len_secs:.2f}\t{elapsed_time:.2f}\t{rt:.2f}\t{cuda}\n")
-
-
-def duration(file):
-    with wave.open(file, 'rb') as wav_file:
-        num_frames = wav_file.getnframes()
-        frame_rate = wav_file.getframerate()
-        return num_frames / frame_rate
 
 
 if __name__ == "__main__":

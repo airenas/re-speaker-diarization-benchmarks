@@ -10,7 +10,7 @@ audio_data=./data/WAV16.ZIP
 textgrid_data=./data/GRID-SPK.ZIP
 
 $(corpus_dir)/.done/ $(corpus_dir)/audio $(corpus_dir)/grids $(work_dir)/rrtm corpus $(work_dir)/pyannote $(work_dir)/lium \
-	$(work_dir)/.done/:
+	$(work_dir)/.done $(work_dir)/nemo:
 	mkdir -p $@
 
 $(corpus_dir)/.done/.audio: $(audio_data) | $(corpus_dir)/.done/ $(corpus_dir)/audio
@@ -32,8 +32,8 @@ prepare/data: $(corpus_dir)/.done/.audio $(corpus_dir)/.done/.rrtm
 prepare/list: 
 	@find $(corpus_dir)/audio -type f -name "*.wav" | xargs -n1 -I {} basename {} .wav | sort
 
-diarization/pyannote:
-	cat $(list) | xargs -n1 -I {} sh -c "$(MAKE) $(work_dir)/pyannote/{}.rrtm"
+diarization/%:
+	cat $(list) | xargs -n1 -I {} sh -c "$(MAKE) $(work_dir)/$*/{}.rrtm"
 
 diarization/lium:
 	cat $(list) | xargs -n1 -I {} sh -c "$(MAKE) $(work_dir)/lium/{}.rrtm $(work_dir)/lium/{}.seg"
@@ -44,6 +44,9 @@ $(work_dir)/.done/.lium-docker: | $(work_dir)/.done/
 
 $(work_dir)/pyannote/%.rrtm: | $(work_dir)/pyannote
 	$(python_cmd) sd_benchmark/pyannote/diarization.py --input $(corpus_dir)/audio/$*.wav --output_dir $(work_dir)/pyannote
+
+$(work_dir)/nemo/%.rrtm: | $(work_dir)/nemo
+	$(python_cmd) sd_benchmark/nemo/diarization.py --input $(corpus_dir)/audio/$*.wav --output_dir $(work_dir)/nemo
 
 $(work_dir)/lium/%.seg: $(work_dir)/.done/.lium-docker | $(work_dir)/lium
 	docker run --rm -i -v $$(pwd)/$(corpus_dir)/audio:/in -v $$(pwd)/$(work_dir)/lium:/res airenas/lium:0.1.0 ./run.sh /in/$*.wav /res/$*.seg
