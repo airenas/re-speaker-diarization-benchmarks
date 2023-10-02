@@ -14,7 +14,7 @@ class Seg:
 
 def main(argv):
     logger.info("Starting")
-    parser = argparse.ArgumentParser(description="Converts text grid to rrtm")
+    parser = argparse.ArgumentParser(description="Converts text grid to rttm")
     parser.add_argument("--input", nargs='?', required=True, help="Input file to parse")
     parser.add_argument("--output", nargs='?', required=True, help="Output dir")
     args = parser.parse_args(args=argv)
@@ -35,17 +35,17 @@ def main(argv):
 
     segs = sorted(segs, key=lambda d: d.start)
 
-    rrtm_lines = []
+    rttm_lines = []
     for s in segs:
         start_time = s.start / 100
         duration = s.dur / 100
         label = s.sp
 
-        rrtm_line = f"SPEAKER {file_name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> {label} <NA> <NA>"
-        rrtm_lines.append(rrtm_line)
+        rttm_line = f"SPEAKER {file_name} 1 {start_time:.3f} {duration:.3f} <NA> <NA> {label} <NA> <NA>"
+        rttm_lines.append(rttm_line)
 
     with open(out_file, "w") as file:
-        [file.write(line + '\n') for line in rrtm_lines]
+        [file.write(line + '\n') for line in rttm_lines]
     logger.info("done")
 
 

@@ -34,7 +34,7 @@ def main(argv):
     logger.info("Starting")
     parser = argparse.ArgumentParser(description="Nemo diarization")
     parser.add_argument("--input", nargs='?', required=True, help="wav file")
-    parser.add_argument("--output_dir", nargs='?', required=True, help="rrtm file")
+    parser.add_argument("--output_dir", nargs='?', required=True, help="rttm file")
     args = parser.parse_args(args=argv)
 
     f_len_secs = duration(args.input)

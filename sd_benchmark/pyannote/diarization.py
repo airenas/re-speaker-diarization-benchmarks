@@ -14,7 +14,7 @@ def main(argv):
     logger.info("Starting")
     parser = argparse.ArgumentParser(description="Show speakers")
     parser.add_argument("--input", nargs='?', required=True, help="wav file")
-    parser.add_argument("--output_dir", nargs='?', required=True, help="rrtm file")
+    parser.add_argument("--output_dir", nargs='?', required=True, help="rttm file")
     args = parser.parse_args(args=argv)
 
     f_len_secs = duration(args.input)
@@ -35,7 +35,7 @@ def main(argv):
     logger.info(f"Done diarization in {elapsed_time:.2f}s, rt = {rt:.2f}")
 
     base, _ = os.path.splitext(os.path.basename(args.input))
-    out_file = os.path.join(args.output_dir, base + ".rrtm")
+    out_file = os.path.join(args.output_dir, base + ".rttm")
     with open(out_file, "w") as f:
         diarization.write_rttm(f)
     out_file = os.path.join(args.output_dir, base + ".time")
