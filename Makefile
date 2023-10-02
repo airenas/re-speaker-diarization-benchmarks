@@ -57,7 +57,7 @@ calc-err/pyannote:
 	cat $(work_dir)/pyannote/*.time
 
 calc-err/lium:
-	cat $(list) | xargs -n1 -I {} sh -c "$(MAKE) $(work_dir)/lium/{}.err"
+	cat $(list) | xargs -n1 -I {} sh -c "$(MAKE) $(work_dir)/lium/{}.err $(work_dir)/lium/{}.rrtm $(work_dir)/lium/{}.seg"
 	cat $(work_dir)/lium/*.err
 
 $(work_dir)/pyannote/%.err: $(work_dir)/pyannote/%.rrtm
