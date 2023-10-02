@@ -3,3 +3,4 @@ data/**
 .idea/
 corpus/**
 Makefile.options
+/sd_benchmark/pyannote/.ipynb_checkpoints/show_speakers-checkpoint.ipynb

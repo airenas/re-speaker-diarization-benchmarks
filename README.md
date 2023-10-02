@@ -29,6 +29,8 @@ pip install -r requirements.txt
 conda create -n spdia-nemo2023 python=3.10
 conda activate spdia-nemo2023
 pip install -r requirements-nemo.txt
+# if requirements does not work
+# pip install Cython nemo_toolkit[all]
 ```
 
 ### data
