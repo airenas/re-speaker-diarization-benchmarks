@@ -12,7 +12,7 @@ from sd_benchmark.utils.duration import duration
 
 def main(argv):
     logger.info("Starting")
-    parser = argparse.ArgumentParser(description="Show speakers")
+    parser = argparse.ArgumentParser(description="Pyannote diarization")
     parser.add_argument("--input", nargs='?', required=True, help="wav file")
     parser.add_argument("--output_dir", nargs='?', required=True, help="rttm file")
     args = parser.parse_args(args=argv)
