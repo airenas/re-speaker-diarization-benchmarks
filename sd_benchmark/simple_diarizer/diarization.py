@@ -25,7 +25,7 @@ def main(argv):
 
     base, _ = os.path.splitext(os.path.basename(args.input))
     out_file = os.path.join(args.output_dir, base + ".rttm")
-    diarization = Diarizer(embed_model='ecapa', cluster_method='sc', window=1.5, period=0.75)
+    diarization = Diarizer(embed_model='xvec', cluster_method='ahc', window=1.5, period=0.75)
     start_time = time.time()
     segments = diarization.diarize(args.input, num_speakers=None, threshold=1e-1, outfile=out_file)
     end_time = time.time()
