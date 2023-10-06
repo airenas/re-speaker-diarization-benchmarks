@@ -33,6 +33,15 @@ pip install -r requirements-nemo.txt
 # pip install Cython nemo_toolkit[all]
 ```
 
+#### Simple Diarizer
+```bash
+conda create -n spdia-sd2023 python=3.11
+conda activate spdia-sd2023
+pip install -r requirements-simple-diarizer.txt
+# if requirements does not work
+# pip install Cython nemo_toolkit[all]
+```
+
 ### data
 
 Initial data expected to be located in `./data` dir
