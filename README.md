@@ -38,8 +38,6 @@ pip install -r requirements-nemo.txt
 conda create -n spdia-sd2023 python=3.11
 conda activate spdia-sd2023
 pip install -r requirements-simple-diarizer.txt
-# if requirements does not work
-# pip install Cython nemo_toolkit[all]
 ```
 
 ### data
@@ -50,8 +48,18 @@ Initial data expected to be located in `./data` dir
 make prepare/data
 ```
 
-### diariazation
+### diarization
 
 ```bash
-make calc-err/pyannote
+make calc-err/pyannote calc-err/lium calc-err/kaldi
 ```
+
+### Results
+
+| lib       | der       | der (-false alarm) | rt       | Info | VAD | Embedings/model | Clustering
+|-----------|-----------|--------------|-----------|--------| ---| --| -- |
+| pyannote  | o0.48 | o0.16| o1.51 | local e2e + multi stage | CG-LSTM | pyannote/speaker-diarization@2.1 | 
+| nemo | o0.45 |	o0.20 | o0.24 | multi stage | huseinzol05/nemo-vad-multilingual-marblenet  | nvidia/speakerverification_en_titanet_large | Multi-scale Diarizerion Decoder 
+| kaldi (bbc)| 0.52	| 0.42 | 0.07 | multi stage | based on xvectors | xvectors
+| simple diarizer | o0.63 | o0.35 | o0.04 | multi stage | snakers4/silero-vad | xvectors - speechbrain/spkrec-xvect-voxceleb | Agglomerative Hierarchical Clustering
+| lium| o0.75 | o0.36| o0.30| multi stage |
