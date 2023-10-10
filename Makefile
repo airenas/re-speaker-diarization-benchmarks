@@ -41,7 +41,7 @@ diarization/lium:
 diarization/kaldi-bbc:
 	cat $(list) | xargs -n1 -I {} sh -c "$(MAKE) $(work_dir)/kaldi/{}.rttm"
 
-$(work_dir)/.done/.lium-docker: | $(work_dir)/.done/
+$(work_dir)/.done/.lium-docker: | $(work_dir)/.done
 	cd lium && $(MAKE) dbuild
 	touch $@
 

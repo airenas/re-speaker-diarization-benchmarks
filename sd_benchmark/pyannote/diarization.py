@@ -20,7 +20,7 @@ def main(argv):
     f_len_secs = duration(args.input)
 
     logger.info("Init models")
-    pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization-3.0",
+    pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization@2.1",
                                         use_auth_token=os.getenv('HF_API_TOKEN'))
     cuda = os.getenv('CUDA')  # 'cuda:0'
     if cuda and cuda != "cpu":
