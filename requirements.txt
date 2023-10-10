@@ -1,4 +1,4 @@
-praat-textgrids==1.4.0
+praat-textgrids @ https://github.com/airenas/Praat-textgrids/archive/refs/tags/v0.1.0.zip#sha256=48caa43d0d1929d6c024f60505bbf5196c9ba269849a28fad205ab631c1e7f41
 ipython==7.34.0
 pyannote.audio @ https://github.com/pyannote/pyannote-audio/archive/refs/heads/develop.zip#sha256=0742ea6ac5f545a7a3df43472b747d64f16e258edaefb8a71af69152685be887
 
