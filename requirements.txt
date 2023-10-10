@@ -1,6 +1,7 @@
 praat-textgrids @ https://github.com/airenas/Praat-textgrids/archive/refs/tags/v0.1.2.zip#sha256=ffb1f6aa05240bd76fae3fb25a6ac0ac0e0392316238b4bcf6233218599562d6
 ipython==7.34.0
-pyannote.audio @ https://github.com/pyannote/pyannote-audio/archive/refs/heads/develop.zip#sha256=0742ea6ac5f545a7a3df43472b747d64f16e258edaefb8a71af69152685be887
+pyannote.audio==3.0
+#pyannote.audio @ https://github.com/pyannote/pyannote-audio/archive/refs/heads/develop.zip#sha256=0742ea6ac5f545a7a3df43472b747d64f16e258edaefb8a71af69152685be887
 
 jupyter==1.0.0
 notebook==7.0.4
