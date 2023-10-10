@@ -81,10 +81,10 @@ $(work_dir)/kaldi/%.rttm: $(work_dir)/kaldi/%.stm | $(work_dir)/kaldi/out
 
 calc-err/%:
 	cat $(list) | xargs -n1 -I {} sh -c "$(MAKE) $(work_dir)/$*/{}.err"
-	cat $(work_dir)/$*/*.err
-	cat $(work_dir)/$*/*.time
-	cat $(work_dir)/$*/*.err | $(python_cmd) sd_benchmark/calc_total_err.py
-	cat $(work_dir)/$*/*.time | $(python_cmd) sd_benchmark/calc_total_time.py
+	xargs -a $(list) -I {} cat $(work_dir)/$*/{}.err
+	xargs -a $(list) -I {} cat $(work_dir)/$*/{}.time
+	xargs -a $(list) -I {} cat $(work_dir)/$*/{}.err | $(python_cmd) sd_benchmark/calc_total_err.py
+	xargs -a $(list) -I {} cat $(work_dir)/$*/{}.time | $(python_cmd) sd_benchmark/calc_total_time.py
 
 $(work_dir)/pyannote/%.err: $(work_dir)/pyannote/%.rttm
 	$(python_cmd) sd_benchmark/pyannote/der.py --audio $(corpus_dir)/audio/$*.wav --f1 $(corpus_dir)/audio/$*.rttm --f2 $^ --output $@
