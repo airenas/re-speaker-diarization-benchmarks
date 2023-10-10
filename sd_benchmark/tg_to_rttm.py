@@ -57,7 +57,7 @@ def main(argv):
     def add_annotation(ann):
         start_time = ann.xmin
         duration = ann.xmax - start_time
-        label = str(ann.text)
+        label = str(ann.text).strip()
         if label and not label.startswith("_"):
             res.append(RTTMData(label=label, start=start_time, dur=duration))
 
