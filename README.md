@@ -14,12 +14,11 @@ The repo tests several speaker diarization tools on our local corpus:
 ### env
 
 Tested with Python: 
- - 3.11
- - 3.10 (Nemo)
+ - 3.10
 
 #### Pyannote
 ```bash
-conda create -n spdia2023 python=3.11
+conda create -n spdia2023 python=3.10
 conda activate spdia2023
 pip install -r requirements.txt
 ```
@@ -35,7 +34,7 @@ pip install -r requirements-nemo.txt
 
 #### Simple Diarizer
 ```bash
-conda create -n spdia-sd2023 python=3.11
+conda create -n spdia-sd2023 python=3.10
 conda activate spdia-sd2023
 pip install -r requirements-simple-diarizer.txt
 ```
