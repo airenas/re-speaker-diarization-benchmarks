@@ -38,9 +38,6 @@ diarization/%:
 diarization/lium:
 	cat $(list) | xargs -n1 -I {} sh -c "$(MAKE) $(work_dir)/lium/{}.rttm $(work_dir)/lium/{}.seg"
 
-diarization/kaldi-bbc:
-	cat $(list) | xargs -n1 -I {} sh -c "$(MAKE) $(work_dir)/kaldi/{}.rttm"
-
 $(work_dir)/.done/.lium-docker: | $(work_dir)/.done
 	cd lium && $(MAKE) dbuild
 	touch $@
@@ -79,11 +76,16 @@ $(work_dir)/kaldi/%.rttm: $(work_dir)/kaldi/%.stm | $(work_dir)/kaldi/out
 	$(python_cmd) sd_benchmark/calc_time.py --input $(corpus_dir)/audio/$*.wav --start $(work_dir)/kaldi/$*.time.start --end $(work_dir)/kaldi/$*.time.end --output $(work_dir)/kaldi/$*.time
 
 
-calc-err/%:
+calc/err/%:
 	cat $(list) | xargs -n1 -I {} sh -c "$(MAKE) $(work_dir)/$*/{}.err"
+	$(MAKE) show/err/$*
+
+show/err/%:
 	xargs -a $(list) -I {} cat $(work_dir)/$*/{}.err
-	xargs -a $(list) -I {} cat $(work_dir)/$*/{}.time
 	xargs -a $(list) -I {} cat $(work_dir)/$*/{}.err | $(python_cmd) sd_benchmark/calc_total_err.py
+
+show/time/%:
+	xargs -a $(list) -I {} cat $(work_dir)/$*/{}.time
 	xargs -a $(list) -I {} cat $(work_dir)/$*/{}.time | $(python_cmd) sd_benchmark/calc_total_time.py
 
 $(work_dir)/pyannote/%.err: $(work_dir)/pyannote/%.rttm
