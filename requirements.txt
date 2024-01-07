@@ -8,3 +8,4 @@ torchaudio==0.13.1
 ipython==7.34.0
 jupyter==1.0.0
 notebook==7.0.4
+pydub==0.25.1
