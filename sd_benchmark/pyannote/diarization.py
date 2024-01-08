@@ -15,6 +15,7 @@ def main(argv):
     parser = argparse.ArgumentParser(description="Pyannote diarization")
     parser.add_argument("--input", nargs='?', required=True, help="wav file")
     parser.add_argument("--output_dir", nargs='?', required=True, help="rttm file")
+    parser.add_argument("--speakers", nargs='?', default=None, type=int, required=False, help="speakers")
     args = parser.parse_args(args=argv)
 
     f_len_secs = duration(args.input)
@@ -25,10 +26,10 @@ def main(argv):
     cuda = os.getenv('CUDA')  # 'cuda:0'
     if cuda and cuda != "cpu":
         pipeline = pipeline.to(torch.device(cuda))
-    logger.info(f"Starting diarization: file len {f_len_secs:.2f}s on '{cuda}'")
+    logger.info(f"Starting diarization: file len {f_len_secs:.2f}s on '{cuda}', speakers {args.speakers}")
 
     start_time = time.time()
-    diarization = pipeline(args.input)
+    diarization = pipeline(args.input, num_speakers=args.speakers)
     end_time = time.time()
     elapsed_time = end_time - start_time
     rt = elapsed_time / f_len_secs
