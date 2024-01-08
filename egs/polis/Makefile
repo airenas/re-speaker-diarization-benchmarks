@@ -1,4 +1,5 @@
 include Makefile.options
+include $(cfg)
 log?=INFO
 python_cmd=PYTHONPATH=../../ LOG_LEVEL=$(log) python
 CUDA?=cpu
