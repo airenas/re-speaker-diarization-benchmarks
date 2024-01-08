@@ -80,12 +80,21 @@ def main(argv):
         res = join_same_speaker(res)
 
         rttm_lines = []
+        labels = set()
         for r in res:
             rttm_line = f"SPEAKER {file_name} 1 {r.start:.3f} {r.dur:.3f} <NA> <NA> {r.label} <NA> <NA>"
             rttm_lines.append(rttm_line)
+            labels.add(r.label)
 
         with open(out_file, "w") as file:
             [file.write(line + '\n') for line in rttm_lines]
+
+        if len(labels) > 2:
+            logger.info(f"=============> More than 2 LABELS: {labels}")
+            # raise RuntimeError("3 labels")
+        else:
+            logger.info(f"LABELS: {labels}")
+
         logger.info("done")
 
     except Exception as e:
