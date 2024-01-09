@@ -1,0 +1,11 @@
+praat-textgrids @ https://github.com/airenas/Praat-textgrids/archive/refs/tags/v0.1.2.zip#sha256=ffb1f6aa05240bd76fae3fb25a6ac0ac0e0392316238b4bcf6233218599562d6
+
+nvidia-cudnn-cu11==8.5.0.96
+pyannote.audio==3.1
+torch==2.0
+torchaudio==2.0.0
+
+ipython==7.34.0
+jupyter==1.0.0
+notebook==7.0.4
+pydub==0.25.1

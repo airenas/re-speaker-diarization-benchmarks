@@ -16,20 +16,24 @@ def main(argv):
     parser.add_argument("--input", nargs='?', required=True, help="wav file")
     parser.add_argument("--output_dir", nargs='?', required=True, help="rttm file")
     parser.add_argument("--speakers", nargs='?', default=None, type=int, required=False, help="speakers")
+    parser.add_argument("--speakers-min", nargs='?', default=None, type=int, required=False, help="speakers from")
+    parser.add_argument("--speakers-max", nargs='?', default=None, type=int, required=False, help="speakers to")
+    parser.add_argument("--model", nargs='?', default="pyannote/speaker-diarization@2.1", type=str, help="model version")
     args = parser.parse_args(args=argv)
 
     f_len_secs = duration(args.input)
 
-    logger.info("Init models")
-    pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization@2.1",
-                                        use_auth_token=os.getenv('HF_API_TOKEN'))
+    logger.info(f"Init models: {args.model}")
+    pipeline = Pipeline.from_pretrained(args.model, use_auth_token=os.getenv('HF_API_TOKEN'))
     cuda = os.getenv('CUDA')  # 'cuda:0'
     if cuda and cuda != "cpu":
         pipeline = pipeline.to(torch.device(cuda))
-    logger.info(f"Starting diarization: file len {f_len_secs:.2f}s on '{cuda}', speakers {args.speakers}")
+    logger.info(
+        f"Starting diarization: file len {f_len_secs:.2f}s on '{cuda}', speakers {args.speakers} [{args.speakers_min}-{args.speakers_max}]")
 
     start_time = time.time()
-    diarization = pipeline(args.input, num_speakers=args.speakers)
+    diarization = pipeline(args.input, num_speakers=args.speakers, min_speakers=args.speakers_min,
+                           max_speakers=args.speakers_max)
     end_time = time.time()
     elapsed_time = end_time - start_time
     rt = elapsed_time / f_len_secs
