@@ -4,7 +4,7 @@ log?=INFO
 python_cmd=PYTHONPATH=../../ LOG_LEVEL=$(log) python
 CUDA?=cpu
 variant?=mini
-list?=./work/$(variant).list
+list?=./data/test.$(variant).txt
 PYANNOTE_DATABASE_CONFIG=data/database.yaml
 ############################################################
 corpus_dir=corpus
@@ -32,7 +32,14 @@ $(corpus_dir)/.done/.uem: $(corpus_dir)/.done/.audio
 	ls -1 $(corpus_dir)/audio.in/*.wav | xargs -n 1 basename | xargs -I {} sh -c "$(python_cmd) ../../sd_benchmark/to_uem.py --input $(corpus_dir)/audio/{} --out_dir $(corpus_dir)/audio"
 	touch $@
 
-prepare/data: $(corpus_dir)/.done/.audio $(corpus_dir)/.done/.rttm $(corpus_dir)/.done/.uem
+$(corpus_dir)/all.list: $(corpus_dir)/.done/.audio
+	@find $(corpus_dir)/audio -type f -name "*.wav" | xargs -n1 -I {} basename {} .wav | sort > $@
+
+$(corpus_dir)/.done/.sets: $(corpus_dir)/all.list
+	$(python_cmd) local/prepare_sets.py --input $(corpus_dir)/all.list --out-dir data
+	touch $@
+
+prepare/data: $(corpus_dir)/.done/.audio $(corpus_dir)/.done/.rttm $(corpus_dir)/.done/.uem $(corpus_dir)/.done/.sets
 
 prepare/list: 
 	@find $(corpus_dir)/audio -type f -name "*.wav" | xargs -n1 -I {} basename {} .wav | sort

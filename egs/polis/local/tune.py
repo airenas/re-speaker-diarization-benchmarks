@@ -27,7 +27,7 @@ def main(argv):
     logger.info(f"Ds: {args.ds}")
     logger.info(f"Training segmentation")
 
-    iterations=20
+    tune_epochs = 20
 
     pretrained_pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization",
                                                    use_auth_token=os.getenv('HF_API_TOKEN'))
@@ -69,7 +69,7 @@ def main(argv):
     # we train for at most 20 epochs (might be shorter in case of early stopping)
     trainer = Trainer(accelerator="gpu",
                       callbacks=callbacks,
-                      max_epochs=iterations,
+                      max_epochs=tune_epochs,
                       gradient_clip_val=0.5)
     trainer.fit(model)
     # save path to the best checkpoint for later use
@@ -90,7 +90,7 @@ def main(argv):
 
     for i, iteration in enumerate(iterations):
         print(f"Best segmentation threshold so far: {iteration['params']['segmentation']['threshold']}")
-        if i > iterations: break  # 50 iterations should give slightly better results
+        if i > tune_epochs: break  # 50 iterations should give slightly better results
     best_segmentation_threshold = optimizer.best_params["segmentation"]["threshold"]
     logger.info(f"best_segmentation_threshold = {best_segmentation_threshold}")
 
@@ -117,7 +117,7 @@ def main(argv):
     iterations = optimizer.tune_iter(dev_set, show_progress=False)
     for i, iteration in enumerate(iterations):
         print(f"Best clustering threshold so far: {iteration['params']['clustering']['threshold']}")
-        if i > iterations: break  # 50 iterations should give slightly better results
+        if i > tune_epochs: break  # 50 iterations should give slightly better results
     best_clustering_threshold = optimizer.best_params['clustering']['threshold']
     logger.info(f"best_clustering_threshold = {best_clustering_threshold}")
 

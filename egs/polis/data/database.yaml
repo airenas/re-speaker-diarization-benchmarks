@@ -1,0 +1,33 @@
+Databases:
+  POLIS: ../corpus/audio/{uri}.wav
+
+Protocols:
+  POLIS:
+    SpeakerDiarization:
+      all:
+        train:
+            uri: data/train.all.txt
+            annotation: corpus/audio/{uri}.rttm
+            annotated: corpus/audio/{uri}.uem
+        development:
+            uri: data/dev.all.txt
+            annotation: corpus/audio/{uri}.rttm
+            annotated: corpus/audio/{uri}.uem
+        test:
+            uri: data/test.all.txt
+            annotation: corpus/audio/{uri}.rttm
+            annotated: corpus/audio/{uri}.uem
+      mini:
+        train:
+            uri: data/train.mini.txt
+            annotation: corpus/audio/{uri}.rttm
+            annotated: corpus/audio/{uri}.uem
+        development:
+            uri: data/dev.mini.txt
+            annotation: corpus/audio/{uri}.rttm
+            annotated: corpus/audio/{uri}.uem
+        test:
+            uri: data/test.mini.txt
+            annotation: corpus/audio/{uri}.rttm
+            annotated: corpus/audio/{uri}.uem
+ 
