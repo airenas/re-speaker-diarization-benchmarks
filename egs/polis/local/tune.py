@@ -27,7 +27,7 @@ def main(argv):
     logger.info(f"Ds: {args.ds}")
     logger.info(f"Training segmentation")
 
-    tune_epochs = 20
+    tune_epochs = 50
 
     pretrained_pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization",
                                                    use_auth_token=os.getenv('HF_API_TOKEN'))
