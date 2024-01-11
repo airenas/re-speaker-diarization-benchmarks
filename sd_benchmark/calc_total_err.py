@@ -21,7 +21,7 @@ def main(argv):
             avg_der += float(splits[2]) * len_f
             avf_der_nosil += float(splits[3]) * len_f
 
-    print(f"total\t{len_s:.2f}\t{avg_der / len_s:.2f}\t{avf_der_nosil / len_s:.2f}\n")
+    print(f"total\t{len_s:.2f}\t{avg_der / len_s:.4f}\t{avf_der_nosil / len_s:.4f}\n")
 
 
 if __name__ == "__main__":

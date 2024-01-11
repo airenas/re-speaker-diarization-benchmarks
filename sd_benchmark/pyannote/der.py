@@ -28,11 +28,11 @@ def main(argv):
     der_det = metric(d1, d2, detailed=True)
     der = der_det['diarization error rate']
     der_no_sil = (der_det['confusion'] + der_det['missed detection']) / der_det['total']
-    logger.info(f'diarization error rate = {der:.3f}')
-    logger.info(f'diarization error rate no sil = {der_no_sil:.3f}')
+    logger.info(f'diarization error rate = {der:.4f}')
+    logger.info(f'diarization error rate no sil = {der_no_sil:.4f}')
     base, _ = os.path.splitext(os.path.basename(args.f2))
     with open(args.output, "w") as f:
-        f.write(f'{base}\t{f_len_secs:.2f}\t{der:.3f}\t{der_no_sil:.3f}\n')
+        f.write(f'{base}\t{f_len_secs:.2f}\t{der:.4f}\t{der_no_sil:.4f}\n')
 
 
 if __name__ == "__main__":
