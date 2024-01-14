@@ -20,6 +20,7 @@ def take_fraction(data, fraction):
 
 def main(argv):
     logger.info("Starting")
+    random_seed=50
     parser = argparse.ArgumentParser(description="Prepare train/dev/val sets")
     parser.add_argument("--input", nargs='?', required=True, help="All file list")
     parser.add_argument("--out-dir", nargs='?', required=True, help="Output dir")
@@ -29,8 +30,8 @@ def main(argv):
         lines = txt_file.readlines()
     lines = [line.strip() for line in lines]
     logger.info(f"Read {len(lines)}")
-    train, rem_dev = train_test_split(lines, train_size=0.8, random_state=1)
-    test, dev = train_test_split(rem_dev, train_size=0.5, random_state=1)
+    train, rem_dev = train_test_split(lines, train_size=0.8, random_state=random_seed)
+    test, dev = train_test_split(rem_dev, train_size=0.5, random_state=random_seed)
 
     logger.info(f"Train {len(train)}")
     logger.info(f"Dev {len(dev)}")

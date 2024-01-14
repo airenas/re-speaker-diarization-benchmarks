@@ -25,15 +25,15 @@ $(corpus_dir)/.done/.audio: $(corpus_dir)/.done/.audio.in | $(corpus_dir)/.done/
 	touch $@
 
 $(corpus_dir)/.done/.rttm: $(corpus_dir)/.done/.audio
-	find $(corpus_dir)/audio/anotuoti -type f -name "*.TextGrid" -print0 | xargs -0 -I {} sh -c "$(python_cmd) local/tg_to_rttm.py --input {} --out_dir $(corpus_dir)/audio"
+	find $(corpus_dir)/audio/anotuoti -type f -name "*.TextGrid" -print0 | xargs -0 -I {} sh -c "$(python_cmd) local/tg_to_rttm.py --input {} --skip-3 --out_dir $(corpus_dir)/audio --change-z"
 	touch $@
 
 $(corpus_dir)/.done/.uem: $(corpus_dir)/.done/.audio
 	ls -1 $(corpus_dir)/audio.in/*.wav | xargs -n 1 basename | xargs -I {} sh -c "$(python_cmd) ../../sd_benchmark/to_uem.py --input $(corpus_dir)/audio/{} --out_dir $(corpus_dir)/audio"
 	touch $@
 
-$(corpus_dir)/all.list: $(corpus_dir)/.done/.audio
-	@find $(corpus_dir)/audio -type f -name "*.wav" | xargs -n1 -I {} basename {} .wav | sort > $@
+$(corpus_dir)/all.list: $(corpus_dir)/.done/.rttm
+	@find $(corpus_dir)/audio -type f -name "*.rttm" | xargs -n1 -I {} basename {} .rttm | sort > $@
 
 $(corpus_dir)/.done/.sets: $(corpus_dir)/all.list
 	$(python_cmd) local/prepare_sets.py --input $(corpus_dir)/all.list --out-dir data

@@ -33,11 +33,20 @@ def join_same_speaker(rttm):
     return res
 
 
+def check_label(label, change_z, base):
+    label = label.strip().lower()
+    if label == "z" and change_z:
+        label = f"z_{base}"
+    return label
+
+
 def main(argv):
     logger.info("Starting")
     parser = argparse.ArgumentParser(description="Converts text grid to rttm")
     parser.add_argument("--input", nargs='?', required=True, help="Input file to parse")
     parser.add_argument("--out_dir", nargs='?', required=True, help="Output dir")
+    parser.add_argument('--skip-3', action='store_true', default=False, help='Skip 3 speakers. Make no output file')
+    parser.add_argument('--change-z', action='store_true', default=False, help='Change z speaker')
     args = parser.parse_args(args=argv)
 
     file = args.input
@@ -51,13 +60,16 @@ def main(argv):
     logger.info(f"Out: {out_file}")
 
     res = []
+    labels = set()
 
     def add_annotation(ann):
         start_time = ann.xmin
         duration = ann.xmax - start_time
         label = str(ann.text).strip().replace(" ", "")
         if label and not label.startswith("_"):
-            res.append(RTTMData(label=label, start=start_time, dur=duration))
+            labels.add(label)
+            new_label = check_label(label, args.change_z, base)
+            res.append(RTTMData(label=new_label, start=start_time, dur=duration))
 
     try:
         file_name, _ = os.path.splitext(os.path.basename(file))
@@ -80,21 +92,20 @@ def main(argv):
         res = join_same_speaker(res)
 
         rttm_lines = []
-        labels = set()
         for r in res:
             rttm_line = f"SPEAKER {file_name} 1 {r.start:.3f} {r.dur:.3f} <NA> <NA> {r.label} <NA> <NA>"
             rttm_lines.append(rttm_line)
-            labels.add(r.label)
 
-        with open(out_file, "w") as file:
-            [file.write(line + '\n') for line in rttm_lines]
+        logger.info(f"LABELS: {labels}")
 
-        if len(labels) > 2:
-            logger.info(f"=============> More than 2 LABELS: {labels}")
-            # raise RuntimeError("3 labels")
+        # if len(labels) < 2:
+        #     logger.info(f"!!!!!!!!!!!!!!!!!! 1 speaker {base}")
+        #     raise RuntimeError("1 speaker")
+        if len(labels) > 2 and args.skip_3:
+            logger.info(f"Skip output More than 2 LABELS: {labels}")
         else:
-            logger.info(f"LABELS: {labels}")
-
+            with open(out_file, "w") as file:
+                [file.write(line + '\n') for line in rttm_lines]
         logger.info("done")
 
     except Exception as e:

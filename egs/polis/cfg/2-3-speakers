@@ -1,2 +1,2 @@
-work_dir?=work
+work_dir?=work-2-3s
 dia_params=--speakers-min=2 --speakers-max=3
