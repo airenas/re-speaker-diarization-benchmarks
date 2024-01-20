@@ -5,11 +5,17 @@ import sys
 import time
 
 import torch
-from pyannote.audio import Pipeline
+from pyannote.audio import Pipeline, Model
 from pyannote.audio.pipelines import SpeakerDiarization
 
 from sd_benchmark.logger import logger
 from sd_benchmark.utils.duration import duration
+
+
+def or_default(param, def_param):
+    if param == "default":
+        return def_param
+    return param
 
 
 def main(argv):
@@ -31,15 +37,20 @@ def main(argv):
         cfg = json.load(json_file)
     logger.info(f"Segmentation model: {cfg['model']}")
 
-    pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization", use_auth_token=os.getenv('HF_API_TOKEN'))
+    pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization@2.1", use_auth_token=os.getenv('HF_API_TOKEN'))
     cuda = os.getenv('CUDA')  # 'cuda:0'
     if cuda and cuda != "cpu":
         pipeline = pipeline.to(torch.device(cuda))
     logger.info(
         f"Starting diarization: file len {f_len_secs:.2f}s on '{cuda}', speakers {args.speakers} [{args.speakers_min}-{args.speakers_max}]")
 
+    default_params = pipeline.parameters(instantiated=True)
+    model = cfg["model"]
+    if model == "default":
+        model = Model.from_pretrained("pyannote/segmentation'", use_auth_token=os.getenv('HF_API_TOKEN'))
+
     finetuned_pipeline = SpeakerDiarization(
-        segmentation=cfg["model"],
+        segmentation=model,
         embedding=pipeline.embedding,
         embedding_exclude_overlap=pipeline.embedding_exclude_overlap,
         clustering=pipeline.klustering,
@@ -47,19 +58,19 @@ def main(argv):
 
     finetuned_pipeline.instantiate({
         "segmentation": {
-            "threshold": cfg["best_segmentation_threshold"],
-            "min_duration_off": 0.0,
+            "threshold": or_default(cfg["best_segmentation_threshold"], default_params["segmentation"]["threshold"]),
+            "min_duration_off": default_params["segmentation"]["min_duration_off"],
         },
         "clustering": {
-            "method": "centroid",
-            "min_cluster_size": 15,
-            "threshold": cfg["best_clustering_threshold"],
+            "method": default_params["clustering"]["method"],
+            "min_cluster_size": default_params["clustering"]["min_cluster_size"],
+            "threshold": or_default(cfg["best_clustering_threshold"], default_params["clustering"]["threshold"]),
         },
     })
 
     start_time = time.time()
     diarization = finetuned_pipeline(args.input, num_speakers=args.speakers, min_speakers=args.speakers_min,
-                           max_speakers=args.speakers_max)
+                                     max_speakers=args.speakers_max)
     end_time = time.time()
     elapsed_time = end_time - start_time
     rt = elapsed_time / f_len_secs

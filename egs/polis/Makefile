@@ -4,7 +4,8 @@ log?=INFO
 python_cmd=PYTHONPATH=../../ LOG_LEVEL=$(log) python
 CUDA?=cpu
 variant?=mini
-list?=./data/test.$(variant).txt
+set?=test
+list?=./data/$(set).$(variant).txt
 PYANNOTE_DATABASE_CONFIG=data/database.yaml
 ############################################################
 corpus_dir=corpus
@@ -72,6 +73,8 @@ show/db:
 tune/model: $(work_dir)/tuned.json
 $(work_dir)/tuned.json:
 	$(python_cmd) local/tune.py --ds POLIS.SpeakerDiarization.$(variant) --out $(work_dir)/tuned.json
+# $(work_dir)/tuned.json:
+# 	$(python_cmd) local/tune_params.py --ds POLIS.SpeakerDiarization.$(variant) --out $(work_dir)/tuned.json
 diarization/tuned:
 	cat $(list) | xargs -n1 -I {} sh -c "$(MAKE) $(work_dir)/tuned/{}.rttm"
 
