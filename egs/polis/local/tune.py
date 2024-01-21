@@ -22,15 +22,17 @@ def main(argv):
     parser = argparse.ArgumentParser(description="Tune pyanote params")
     parser.add_argument("--ds", nargs='?', required=True, help="Dataset name")
     parser.add_argument("--out", nargs='?', required=True, help="Output file")
+    parser.add_argument("--epoch", nargs='?', type=int, default=50, help="Tune epoch")
     parser.add_argument("--tune", nargs='?', required=False, default="msc",
                         help="Tune m - model, s - segnmentatiom threshold, c - clustering threshold")
     args = parser.parse_args(args=argv)
 
     logger.info(f"Ds: {args.ds}")
     logger.info(f"Tune params: {args.tune}")
+    logger.info(f"Tune epoch: {args.epoch}")
     logger.info(f"Training segmentation")
 
-    tune_epochs = 50
+    tune_epochs = args.epoch
 
     pretrained_pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization",
                                                    use_auth_token=os.getenv('HF_API_TOKEN'))
@@ -102,6 +104,7 @@ def main(argv):
         )
         pipeline.freeze({"segmentation": {"min_duration_off": 0.0}})
         logger.info(f"Tuning segmentation threshold")
+        logger.info(f"Default segmentation threshold: {finetuned_segmentation_threshold}")
         optimizer = Optimizer(pipeline)
 
         iterations = optimizer.tune_iter(dev_set, show_progress=False)
@@ -115,6 +118,8 @@ def main(argv):
 
     if 'c' in args.tune:
         logger.info(f"Tuning clustering threshold")
+        finetuned_clustering_threshold = default_params["clustering"]["threshold"]
+        logger.info(f"Default segmentation threshold: {finetuned_clustering_threshold}")
         pipeline = SpeakerDiarization(
             segmentation=finetuned_model,
             embedding=pretrained_pipeline.embedding,

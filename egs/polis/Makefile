@@ -7,6 +7,7 @@ variant?=mini
 set?=test
 list?=./data/$(set).$(variant).txt
 PYANNOTE_DATABASE_CONFIG=data/database.yaml
+epoch?=50
 ############################################################
 corpus_dir=corpus
 work_dir?=work
@@ -72,7 +73,7 @@ show/db:
 	pyannote-database info POLIS.SpeakerDiarization.$(variant)
 tune/model: $(work_dir)/tuned.json
 $(work_dir)/tuned.json: | $(work_dir)
-	$(python_cmd) local/tune.py --ds POLIS.SpeakerDiarization.$(variant) --out $(work_dir)/tuned.json --tune=$(tune_params)
+	$(python_cmd) local/tune.py --ds POLIS.SpeakerDiarization.$(variant) --out $(work_dir)/tuned.json --tune=$(tune_params) --epoch=$(epoch)
 diarization/tuned:
 	cat $(list) | xargs -n1 -I {} sh -c "$(MAKE) $(work_dir)/tuned/{}.rttm"
 
