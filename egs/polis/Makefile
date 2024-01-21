@@ -72,7 +72,7 @@ show/db:
 	pyannote-database info POLIS.SpeakerDiarization.$(variant)
 tune/model: $(work_dir)/tuned.json
 $(work_dir)/tuned.json:
-	$(python_cmd) local/tune.py --ds POLIS.SpeakerDiarization.$(variant) --out $(work_dir)/tuned.json $(tune_params)
+	$(python_cmd) local/tune.py --ds POLIS.SpeakerDiarization.$(variant) --out $(work_dir)/tuned.json --tune=$(tune_params)
 diarization/tuned:
 	cat $(list) | xargs -n1 -I {} sh -c "$(MAKE) $(work_dir)/tuned/{}.rttm"
 

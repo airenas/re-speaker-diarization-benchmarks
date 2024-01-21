@@ -49,7 +49,7 @@ def main(argv):
 
     res = {
         "model": "default",
-        "best_clustering_threshold": "default",
+        "clustering_threshold": "default",
         "segmentation_threshold": "default"
     }
 
@@ -92,9 +92,9 @@ def main(argv):
         finetuned_model = checkpoint.best_model_path
         logger.info(f"Best segmentation Model: {finetuned_model}")
         logger.info(f"Tuning best_segmentation_threshold")
-        res["model"] = finetuned_model,
+        res["model"] = finetuned_model
 
-    if 's' in args.tuned:
+    if 's' in args.tune:
         pipeline = SpeakerDiarization(
             segmentation=finetuned_model,
             clustering="OracleClustering",
@@ -113,7 +113,7 @@ def main(argv):
         logger.info(f"finetuned_segmentation_threshold = {finetuned_segmentation_threshold}")
         res["segmentation_threshold"] = finetuned_segmentation_threshold
 
-    if 'c' in args.tuned:
+    if 'c' in args.tune:
         logger.info(f"Tuning best_clustering_threshold")
         pipeline = SpeakerDiarization(
             segmentation=finetuned_model,
