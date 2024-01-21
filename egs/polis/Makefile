@@ -13,7 +13,7 @@ work_dir?=work
 audio_data?=
 
 $(corpus_dir)/.done/ $(corpus_dir)/audio $(corpus_dir)/audio.in $(work_dir)/rttm corpus $(work_dir)/pyannote \
-	$(work_dir)/.done $(work_dir)/tuned:
+	$(work_dir)/.done $(work_dir)/tuned $(work_dir):
 	mkdir -p $@
 
 $(corpus_dir)/.done/.audio.in: $(audio_data) | $(corpus_dir)/.done/ $(corpus_dir)/audio.in
@@ -71,7 +71,7 @@ run: diarization/pyannote calc/err/pyannote
 show/db:
 	pyannote-database info POLIS.SpeakerDiarization.$(variant)
 tune/model: $(work_dir)/tuned.json
-$(work_dir)/tuned.json:
+$(work_dir)/tuned.json: | $(work_dir)
 	$(python_cmd) local/tune.py --ds POLIS.SpeakerDiarization.$(variant) --out $(work_dir)/tuned.json --tune=$(tune_params)
 diarization/tuned:
 	cat $(list) | xargs -n1 -I {} sh -c "$(MAKE) $(work_dir)/tuned/{}.rttm"

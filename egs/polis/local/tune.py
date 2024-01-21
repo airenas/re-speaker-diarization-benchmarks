@@ -94,6 +94,7 @@ def main(argv):
         logger.info(f"Tuning best_segmentation_threshold")
         res["model"] = finetuned_model
 
+    dev_set = list(dataset.development())
     if 's' in args.tune:
         pipeline = SpeakerDiarization(
             segmentation=finetuned_model,
@@ -102,7 +103,6 @@ def main(argv):
         pipeline.freeze({"segmentation": {"min_duration_off": 0.0}})
         logger.info(f"Tuning segmentation threshold")
         optimizer = Optimizer(pipeline)
-        dev_set = list(dataset.development())
 
         iterations = optimizer.tune_iter(dev_set, show_progress=False)
 
@@ -114,7 +114,7 @@ def main(argv):
         res["segmentation_threshold"] = finetuned_segmentation_threshold
 
     if 'c' in args.tune:
-        logger.info(f"Tuning best_clustering_threshold")
+        logger.info(f"Tuning clustering threshold")
         pipeline = SpeakerDiarization(
             segmentation=finetuned_model,
             embedding=pretrained_pipeline.embedding,
