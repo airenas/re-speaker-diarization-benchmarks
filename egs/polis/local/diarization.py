@@ -37,7 +37,7 @@ def main(argv):
         cfg = json.load(json_file)
     logger.info(f"Segmentation model: {cfg['model']}")
 
-    pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization@2.1", use_auth_token=os.getenv('HF_API_TOKEN'))
+    pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization", use_auth_token=os.getenv('HF_API_TOKEN'))
     cuda = os.getenv('CUDA')  # 'cuda:0'
     if cuda and cuda != "cpu":
         pipeline = pipeline.to(torch.device(cuda))
@@ -47,7 +47,7 @@ def main(argv):
     default_params = pipeline.parameters(instantiated=True)
     model = cfg["model"]
     if model == "default":
-        model = Model.from_pretrained("pyannote/segmentation'", use_auth_token=os.getenv('HF_API_TOKEN'))
+        model = Model.from_pretrained("pyannote/segmentation", use_auth_token=os.getenv('HF_API_TOKEN'))
 
     finetuned_pipeline = SpeakerDiarization(
         segmentation=model,
@@ -58,13 +58,13 @@ def main(argv):
 
     finetuned_pipeline.instantiate({
         "segmentation": {
-            "threshold": or_default(cfg["best_segmentation_threshold"], default_params["segmentation"]["threshold"]),
+            "threshold": or_default(cfg["segmentation_threshold"], default_params["segmentation"]["threshold"]),
             "min_duration_off": default_params["segmentation"]["min_duration_off"],
         },
         "clustering": {
             "method": default_params["clustering"]["method"],
             "min_cluster_size": default_params["clustering"]["min_cluster_size"],
-            "threshold": or_default(cfg["best_clustering_threshold"], default_params["clustering"]["threshold"]),
+            "threshold": or_default(cfg["clustering_threshold"], default_params["clustering"]["threshold"]),
         },
     })
 

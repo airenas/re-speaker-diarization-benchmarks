@@ -6,3 +6,5 @@ Makefile.options
 /sd_benchmark/pyannote/.ipynb_checkpoints/show_speakers-checkpoint.ipynb
 pretrained_models/
 sd_benchmark/**/__pycache__/
+egs/polis/corpus/**
+egs/polis/work*/**
